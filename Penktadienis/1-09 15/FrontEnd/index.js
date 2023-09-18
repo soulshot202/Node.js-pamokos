@@ -1,10 +1,42 @@
-//import { json } from "body-parser";
-
 const HOST = "http://localhost:3000/todo";
 
-const container = document.querySelector("#todoContainer");
+const submitForm = document.querySelector("form");
+const titleInput = document.querySelector("#title");
+const descriptionInput = document.querySelector("#description");
 
+const container = document.querySelector("#todoContainer");
 let todos = [];
+
+submitForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const title = titleInput.value;
+  const description = descriptionInput.value;
+
+  try {
+    const response = await fetch(HOST, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        description,
+      }),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      titleInput.value = "";
+      descriptionInput.value = "";
+
+      generateTodosHtml(data);
+    } else {
+      alert("Something wrong");
+    }
+  } catch (error) {
+    alert("Something wrong");
+  }
+});
 
 async function getTodos() {
   try {
@@ -13,68 +45,74 @@ async function getTodos() {
       const data = await response.json();
       todos = data;
     } else {
-      alert("Error");
+      alert("Something went wrong");
     }
   } catch (error) {
-    console.log(error.message);
+    alert("Something went wrong");
   }
 }
 
-function generateTodosHtml() {
-  todos.forEach((todo) => {
-    const todoContainer = document.createElement("div");
-    const title = document.createElement("input");
-    const description = document.createElement("input");
-    title.value = todo.title;
-    description.value = todo.description;
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Delete";
-    deleteBtn.addEventListener("click", async () => {
-      if (confirm("Are you sure want to delete")) {
-        try {
-          const response = await fetch(HOST + `/${todo.id}`, {
-            method: "DELETE",
-          });
-          if (response.ok) {
-            todoContainer.remove();
-          } else {
-            alert(`Kazkas negerai`);
-          }
-        } catch (error) {
-          console.log("error");
-        }
-      }
-    });
-    const updateBtn = document.createElement("button");
-    updateBtn.textContent = "Update";
-    updateBtn.addEventListener("click", async () => {
-      try {
-        const titleValue = title.value;
-        const descriptionValue = description.value;
+function generateTodosHtml(todo) {
+  const todoContainer = document.createElement("div");
 
+  const title = document.createElement("input");
+  title.value = todo.title;
+  const description = document.createElement("input");
+  description.value = todo.description;
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "Delete";
+
+  deleteButton.addEventListener("click", async () => {
+    if (confirm("Are you sure you want to delete?")) {
+      try {
         const response = await fetch(HOST + `/${todo.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title: titleValue,
-            description: descriptionValue,
-          }),
+          method: "DELETE",
         });
         if (response.ok) {
-          alert("todo updated");
+          todoContainer.remove();
         } else {
-          alert("kazkas negerai");
+          alert("Something went wrong");
         }
       } catch (error) {
-        console.log("klaida");
+        alert("Something went wrong");
       }
-    });
-    todoContainer.append(title, description, updateBtn, deleteBtn);
-
-    container.append(todoContainer);
+    }
   });
+
+  const updateButton = document.createElement("button");
+  updateButton.textContent = "Update";
+
+  updateButton.addEventListener("click", async () => {
+    const titleValue = title.value;
+    const descriptionValue = description.value;
+    try {
+      const response = await fetch(HOST + `/${todo.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: titleValue,
+          description: descriptionValue,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Todo update");
+      } else {
+        alert("Something went wrong");
+      }
+    } catch (error) {
+      alert("Something went wrong");
+    }
+  });
+
+  todoContainer.append(title, description, deleteButton, updateButton);
+
+  container.append(todoContainer);
 }
+
 await getTodos();
-generateTodosHtml();
+todos.forEach((todo) => {
+  generateTodosHtml(todo);
+});

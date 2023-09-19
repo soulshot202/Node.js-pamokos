@@ -9,7 +9,8 @@ app.get(`/cars/:make`, (req, res) => {
   const { make } = req.params;
   //const cars2 = JSON.parse(cars);
   //res.send(cars2.filter((e) => e.make));
-  res.json({ make: make });
+
+  res.json(cars[make]);
 });
 
 app.listen(PORT, () => {

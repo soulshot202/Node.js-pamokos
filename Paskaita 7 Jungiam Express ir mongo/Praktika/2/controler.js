@@ -21,6 +21,17 @@ export async function getData(req, res) {
 }
 
 export async function getData2(req, res) {
-  const cars = await Car.find({}, { _id: 0, __v: 0 });
-  res.json(cars);
+  const people = await People.find({}, { _id: 0, __v: 0 });
+  res.json(people);
+}
+
+export async function addData(req, res) {
+  const { name, surname, age } = req.body;
+  try {
+    const people = new People({ name, surname, age });
+    await people.save();
+    res.status(201).json(people);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 }

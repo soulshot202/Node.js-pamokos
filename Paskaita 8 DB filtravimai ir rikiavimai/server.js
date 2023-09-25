@@ -25,7 +25,7 @@ app.get(`/`, async (req, res) => {
   const pageSize = 5;
   //   try {
   //     const people = await Person.find()
-  //       .sort({ age: -1, name: 1 })
+  //       .sort({ age: -1, name: 1 }) //rikiuoja pagal amzius mazejanciai
   //       .limit(2)  // kiek parodys rezultatu
   //       .skip(2); // praleidimas varinatu. rodys nuo 3io
   //     res.json(people);

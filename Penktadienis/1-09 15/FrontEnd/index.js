@@ -1,8 +1,12 @@
+if (localStorage.getItem("loggedIn") !== "true") {
+  window.location.href = "./login.html";
+}
+
 const HOST = "http://localhost:3000/todo";
 
 const submitForm = document.querySelector("form");
-const titleInput = document.querySelector("#title");
-const descriptionInput = document.querySelector("#description");
+const titleInput = document.querySelector("#titleInput");
+const descriptionInput = document.querySelector("#descriptionInput");
 
 const container = document.querySelector("#todoContainer");
 let todos = [];
@@ -86,6 +90,7 @@ function generateTodosHtml(todo) {
     const titleValue = title.value;
     const descriptionValue = description.value;
     try {
+      console.log(todo.id);
       const response = await fetch(HOST + `/${todo.id}`, {
         method: "PUT",
         headers: {

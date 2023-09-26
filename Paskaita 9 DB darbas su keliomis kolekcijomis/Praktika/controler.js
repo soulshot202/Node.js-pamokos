@@ -71,15 +71,16 @@ export async function getCategoryPrice(req, res) {
   const categories = await Category.find({}, { title: 1 });
   const products = await Product.find({}, { price: 1, category: 1 });
   const values = categories.map((category) => {
-    let price = 0;
     let title = category.title;
+    let price = 0;
     products.forEach((product) => {
       if (product.category === category._id) {
-        price += product.price;
+        price++;
       }
+      //return price;
     });
-    return price;
   });
+
   res.status(200).json(values);
 
   //   try {

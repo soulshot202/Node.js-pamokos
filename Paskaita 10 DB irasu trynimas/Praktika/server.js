@@ -2,14 +2,13 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import router from "./routes.js";
-import { logger } from "./midleware/index.js";
-
-const app = express();
 
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URL = process.env.MONGO_URL;
+
+const app = express();
 
 mongoose
   .connect(MONGO_URL)
@@ -19,8 +18,8 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
 app.use(express.json());
-app.use(logger);
 app.use(router);
 
 app.listen(PORT, () => {

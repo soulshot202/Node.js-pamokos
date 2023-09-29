@@ -59,7 +59,6 @@ export async function deleteServiceById(req, res) {
     const deleted = await Service.findByIdAndDelete(id);
     const users = await User.find({ service_id: id });
     console.log(users);
-    // deleted.users_id.forEach((user) =>
 
     const query = { _id: { $in: users } };
     const update = {
